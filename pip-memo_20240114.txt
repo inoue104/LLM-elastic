@@ -1,0 +1,10 @@
+pip install 
+
+elasticsearch
+langchain
+langchain-community
+langchain-openai
+openai
+tiktoken
+python-dotenv
+

@@ -1,0 +1,456 @@
+Install Elasticsearch with Docker
+  https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+
+1. install docker
+
+2. Create a new docker network.
+  コンテナ間の通信が必要となるため、docker networkを作成します。
+  docker network create elastic
+
+  % docker network create elastic
+3dd1bd98c7e3071a0012a6f5d273839b42a9bfba603560e88fbf862ed60fa0c4
+
+  % docker network ls
+NETWORK ID     NAME                  DRIVER    SCOPE
+71bd1795f49d   bridge                bridge    local
+03c78a6d76ea   composetest_default   bridge    local
+3dd1bd98c7e3   elastic               bridge    local
+e6664e70e855   host                  host      local
+2b0f8d865529   none                  null      local
+
+
+3. ElasticsearchのDockerイメージをプル。
+  docker pull docker.elastic.co/elasticsearch/elasticsearch:8.11.4
+
+  % docker pull docker.elastic.co/elasticsearch/elasticsearch:8.11.4
+8.11.4: Pulling from elasticsearch/elasticsearch
+9325c6c5f8c7: Pull complete 
+48ef63f6e67f: Pull complete 
+d7fe5d9b21e0: Pull complete 
+89732bc75041: Pull complete 
+80946aad07c1: Pull complete 
+19d218bba0b2: Pull complete 
+0c77a3fd9cc7: Pull complete 
+17b79f3c16dc: Pull complete 
+a114eb852195: Pull complete 
+85579f3b6def: Pull complete 
+Digest: sha256:8425bc28027fd667d9a29cde58bed4050a64a854d973d8d1ad4152ecec52bfdb
+Status: Downloaded newer image for docker.elastic.co/elasticsearch/elasticsearch:8.11.4
+docker.elastic.co/elasticsearch/elasticsearch:8.11.4
+
+What's Next?
+  View a summary of image vulnerabilities and recommendations → docker scout quickview docker.elastic.co/elasticsearch/elasticsearch:8.11.4
+naoyainoue@NaoyanoMacBook-Air-2 LLM % 
+
+
+% docker scout quickview docker.elastic.co/elasticsearch/elasticsearch:8.11.4
+    i New version 1.2.2 available (installed version is 1.2.0) at https://github.com/docker/scout-cli
+    ✓ SBOM of image already cached, 616 packages indexed
+
+  Target             │  docker.elastic.co/elasticsearch/elasticsearch:8.11.4  │    0C     3H     5M     9L     1?   
+    digest           │  1bb9b52029dd                                          │                                     
+  Base image         │  ubuntu:20.04                                          │    0C     0H     0M     7L          
+  Updated base image │  ubuntu:24.04                                          │    0C     0H     0M     0L          
+                     │                                                        │                         -7          
+
+What's Next?
+  View vulnerabilities → docker scout cves docker.elastic.co/elasticsearch/elasticsearch:8.11.4
+  View base image update recommendations → docker scout recommendations docker.elastic.co/elasticsearch/elasticsearch:8.11.4
+  Include policy results in your quickview by supplying an organization → docker scout quickview docker.elastic.co/elasticsearch/elasticsearch:8.11.4 --org <organization>
+
+naoyainoue@NaoyanoMacBook-Air-2 LLM % 
+
+
+4. Start an Elasticsearch container.
+docker run --name es01 --net elastic -p 9200:9200 -it -m 1GB docker.elastic.co/elasticsearch/elasticsearch:8.11.4
+
+% docker run --name es01 --net elastic -p 9200:9200 -it -m 1GB docker.elastic.co/elasticsearch/elasticsearch:8.11.4
+Jan 14, 2024 4:01:21 AM sun.util.locale.provider.LocaleProviderAdapter <clinit>
+WARNING: COMPAT locale provider will be removed in a future release
+{"@timestamp":"2024-01-14T04:01:21.451Z", "log.level": "INFO", "message":"Java vector incubator API enabled; uses preferredBitSize=128", "ecs.version": "1.2.0","service.name":"ES_ECS","event.dataset":"elasticsearch.server","process.thread.name":"main","log.logger":"org.apache.lucene.internal.vectorization.PanamaVectorizationProvider","elasticsearch.node.name":"f94a3a8c93c2","elasticsearch.cluster.name":"docker-cluster"}
+
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Elasticsearch security features have been automatically configured!
+✅ Authentication is enabled and cluster connections are encrypted.
+
+ℹ️  Password for the elastic user (reset with `bin/elasticsearch-reset-password -u elastic`):
+  xA=X+dD4mKYQYHr*RpVw
+
+ℹ️  HTTP CA certificate SHA-256 fingerprint:
+  0eeab8cc1583e76e9304b8282c7b41ccbfc0a5aeed38f7a003ef95c38f1d4d84
+
+ℹ️  Configure Kibana to use this cluster:
+• Run Kibana and click the configuration link in the terminal when Kibana starts.
+• Copy the following enrollment token and paste it into Kibana in your browser (valid for the next 30 minutes):
+  eyJ2ZXIiOiI4LjExLjQiLCJhZHIiOlsiMTcyLjIxLjAuMjo5MjAwIl0sImZnciI6IjBlZWFiOGNjMTU4M2U3NmU5MzA0YjgyODJjN2I0MWNjYmZjMGE1YWVlZDM4ZjdhMDAzZWY5NWMzOGYxZDRkODQiLCJrZXkiOiJtWm9oQm8wQjVDQmtWZWFFMEIycTpYQU1sdFZXQ1FpVzJEVkpXcHFmZnFRIn0=
+
+ℹ️ Configure other nodes to join this cluster:
+• Copy the following enrollment token and start new Elasticsearch nodes with `bin/elasticsearch --enrollment-token <token>` (valid for the next 30 minutes):
+  eyJ2ZXIiOiI4LjExLjQiLCJhZHIiOlsiMTcyLjIxLjAuMjo5MjAwIl0sImZnciI6IjBlZWFiOGNjMTU4M2U3NmU5MzA0YjgyODJjN2I0MWNjYmZjMGE1YWVlZDM4ZjdhMDAzZWY5NWMzOGYxZDRkODQiLCJrZXkiOiJtcG9oQm8wQjVDQmtWZWFFMEIycTpzN0kyWkU2QVNQYWxGeXZVNUoyQURnIn0=
+
+  If you're running in Docker, copy the enrollment token and run:
+  `docker run -e "ENROLLMENT_TOKEN=<token>" docker.elastic.co/elasticsearch/elasticsearch:8.11.4`
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+5. Copy the generated elastic password and enrollment token. 
+
+:::password:::
+docker exec -it es01 /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic
+
+% docker exec -it es01 /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic
+WARNING: Owner of file [/usr/share/elasticsearch/config/users] used to be [root], but now is [elasticsearch]
+WARNING: Owner of file [/usr/share/elasticsearch/config/users_roles] used to be [root], but now is [elasticsearch]
+This tool will reset the password of the [elastic] user to an autogenerated value.
+The password will be printed in the console.
+Please confirm that you would like to continue [y/N]y
+
+
+Password for the [elastic] user successfully reset.
+New value: 7_Mmrpl3M*-sL85dHhM5
+naoyainoue@NaoyanoMacBook-Air-2 LLM %
+
+:::enrollment:::
+% docker exec -it es01 /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana
+eyJ2ZXIiOiI4LjExLjQiLCJhZHIiOlsiMTcyLjIxLjAuMjo5MjAwIl0sImZnciI6IjBlZWFiOGNjMTU4M2U3NmU5MzA0YjgyODJjN2I0MWNjYmZjMGE1YWVlZDM4ZjdhMDAzZWY5NWMzOGYxZDRkODQiLCJrZXkiOiJtNW9tQm8wQjVDQmtWZWFFbGgzTDpRZjlWdVNHNFFnbWpJZ0ZCTzh0Ry1BIn0=
+naoyainoue@NaoyanoMacBook-Air-2 LLM %
+
+
+6. 環境変数にパスワードをセット
+export ELASTIC_PASSWORD="your_password"
+
+% export ELASTIC_PASSWORD="7_Mmrpl3M*-sL85dHhM5"
+% printenv | grep ELASTIC
+ELASTIC_PASSWORD=7_Mmrpl3M*-sL85dHhM5
+naoyainoue@NaoyanoMacBook-Air-2 LLM %
+
+
+7. SSL証明書（http_ca.crt）をコンテナからローカルにコピー
+docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt .
+
+% docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt .
+                                               Successfully copied 3.58kB to /Users/naoyainoue/TEST/LLM/elastic/.
+naoyainoue@NaoyanoMacBook-Air-2 elastic %
+
+8. ローカルから接続を確認
+% curl --cacert http_ca.crt -u elastic:$ELASTIC_PASSWORD https://localhost:9200
+{
+  "name" : "f94a3a8c93c2",
+  "cluster_name" : "docker-cluster",
+  "cluster_uuid" : "yEabddRlTiKGcHbfVBjFTw",
+  "version" : {
+    "number" : "8.11.4",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "da06c53fd49b7e676ccf8a32d6655c5155c16d81",
+    "build_date" : "2024-01-08T10:05:08.438562403Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.8.0",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+naoyainoue@NaoyanoMacBook-Air-2 elastic % 
+
+
+7. SSL証明書（http_ca.crt）をコンテナからローカルにコピー
+docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt .
+
+% docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt .
+                                               Successfully copied 3.58kB to /Users/naoyainoue/TEST/LLM/elastic/.
+naoyainoue@NaoyanoMacBook-Air-2 elastic %
+
+8. ローカルから接続を確認
+% curl --cacert http_ca.crt -u elastic:$ELASTIC_PASSWORD https://localhost:9200
+{
+  "name" : "f94a3a8c93c2",
+  "cluster_name" : "docker-cluster",
+  "cluster_uuid" : "yEabddRlTiKGcHbfVBjFTw",
+  "version" : {
+    "number" : "8.11.4",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "da06c53fd49b7e676ccf8a32d6655c5155c16d81",
+    "build_date" : "2024-01-08T10:05:08.438562403Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.8.0",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+naoyainoue@NaoyanoMacBook-Air-2 elastic % 
+
+
+7. SSL証明書（http_ca.crt）をコンテナからローカルにコピー
+docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt .
+
+% docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt .
+                                               Successfully copied 3.58kB to /Users/naoyainoue/TEST/LLM/elastic/.
+naoyainoue@NaoyanoMacBook-Air-2 elastic %
+
+8. ローカルから接続を確認
+% curl --cacert http_ca.crt -u elastic:$ELASTIC_PASSWORD https://localhost:9200
+{
+  "name" : "f94a3a8c93c2",
+  "cluster_name" : "docker-cluster",
+  "cluster_uuid" : "yEabddRlTiKGcHbfVBjFTw",
+  "version" : {
+    "number" : "8.11.4",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "da06c53fd49b7e676ccf8a32d6655c5155c16d81",
+    "build_date" : "2024-01-08T10:05:08.438562403Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.8.0",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+naoyainoue@NaoyanoMacBook-Air-2 elastic % 
+
+
+7. SSL証明書（http_ca.crt）をコンテナからローカルにコピー
+docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt .
+
+% docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt .
+                                               Successfully copied 3.58kB to /Users/naoyainoue/TEST/LLM/elastic/.
+naoyainoue@NaoyanoMacBook-Air-2 elastic %
+
+8. ローカルから接続を確認
+% curl --cacert http_ca.crt -u elastic:$ELASTIC_PASSWORD https://localhost:9200
+{
+  "name" : "f94a3a8c93c2",
+  "cluster_name" : "docker-cluster",
+  "cluster_uuid" : "yEabddRlTiKGcHbfVBjFTw",
+  "version" : {
+    "number" : "8.11.4",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "da06c53fd49b7e676ccf8a32d6655c5155c16d81",
+    "build_date" : "2024-01-08T10:05:08.438562403Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.8.0",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+naoyainoue@NaoyanoMacBook-Air-2 elastic % 
+
+
+7. SSL証明書（http_ca.crt）をコンテナからローカルにコピー
+docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt .
+
+% docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt .
+                                               Successfully copied 3.58kB to /Users/naoyainoue/TEST/LLM/elastic/.
+naoyainoue@NaoyanoMacBook-Air-2 elastic %
+
+8. ローカルから接続を確認
+% curl --cacert http_ca.crt -u elastic:$ELASTIC_PASSWORD https://localhost:9200
+{
+  "name" : "f94a3a8c93c2",
+  "cluster_name" : "docker-cluster",
+  "cluster_uuid" : "yEabddRlTiKGcHbfVBjFTw",
+  "version" : {
+    "number" : "8.11.4",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "da06c53fd49b7e676ccf8a32d6655c5155c16d81",
+    "build_date" : "2024-01-08T10:05:08.438562403Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.8.0",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+naoyainoue@NaoyanoMacBook-Air-2 elastic % 
+
+
+7. SSL証明書（http_ca.crt）をコンテナからローカルにコピー
+docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt .
+
+% docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt .
+                                               Successfully copied 3.58kB to /Users/naoyainoue/TEST/LLM/elastic/.
+naoyainoue@NaoyanoMacBook-Air-2 elastic %
+
+8. ローカルから接続を確認
+% curl --cacert http_ca.crt -u elastic:$ELASTIC_PASSWORD https://localhost:9200
+{
+  "name" : "f94a3a8c93c2",
+  "cluster_name" : "docker-cluster",
+  "cluster_uuid" : "yEabddRlTiKGcHbfVBjFTw",
+  "version" : {
+    "number" : "8.11.4",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "da06c53fd49b7e676ccf8a32d6655c5155c16d81",
+    "build_date" : "2024-01-08T10:05:08.438562403Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.8.0",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+naoyainoue@NaoyanoMacBook-Air-2 elastic % 
+
+
+7. SSL証明書（http_ca.crt）をコンテナからローカルにコピー
+docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt .
+
+% docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt .
+                                               Successfully copied 3.58kB to /Users/naoyainoue/TEST/LLM/elastic/.
+naoyainoue@NaoyanoMacBook-Air-2 elastic %
+
+8. ローカルから接続を確認
+% curl --cacert http_ca.crt -u elastic:$ELASTIC_PASSWORD https://localhost:9200
+{
+  "name" : "f94a3a8c93c2",
+  "cluster_name" : "docker-cluster",
+  "cluster_uuid" : "yEabddRlTiKGcHbfVBjFTw",
+  "version" : {
+    "number" : "8.11.4",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "da06c53fd49b7e676ccf8a32d6655c5155c16d81",
+    "build_date" : "2024-01-08T10:05:08.438562403Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.8.0",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+naoyainoue@NaoyanoMacBook-Air-2 elastic % 
+
+*********
+
+Kibana
+
+1. KibanaのDockerイメージをプル
+docker pull docker.elastic.co/kibana/kibana:8.11.4
+
+% docker pull docker.elastic.co/kibana/kibana:8.11.4
+8.11.4: Pulling from kibana/kibana
+9325c6c5f8c7: Already exists 
+710b0e400981: Pull complete 
+431cd270cd34: Pull complete 
+9f9044ec1086: Pull complete 
+a62002ecfab9: Pull complete 
+89732bc75041: Pull complete 
+bbf2b749fdc7: Pull complete 
+bd448a146b60: Pull complete 
+09d443a72648: Pull complete 
+12789a1cc552: Pull complete 
+e5e336647b91: Pull complete 
+ce51ad2679ec: Extracting     417B
+ce51ad2679ec: Pull complete 
+56349b89f777: Pull complete 
+3a0c8b81ad4d: Pull complete 
+Digest: sha256:b762e1ae48ae0f056455f3876ecffcd2a0e77e03c2ea75692f41ba8d92e9e096
+Status: Downloaded newer image for docker.elastic.co/kibana/kibana:8.11.4
+docker.elastic.co/kibana/kibana:8.11.4
+
+What's Next?
+  View a summary of image vulnerabilities and recommendations → docker scout quickview docker.elastic.co/kibana/kibana:8.11.4
+naoyainoue@NaoyanoMacBook-Air-2 elastic % 
+
+
+
+2. Kibanaコンテナをスタート
+docker run --name kib01 --net elastic -p 5601:5601 docker.elastic.co/kibana/kibana:8.11.4
+
+% docker run --name kib01 --net elastic -p 5601:5601 docker.elastic.co/kibana/kibana:8.11.4
+Kibana is currently running with legacy OpenSSL providers enabled! For details and instructions on how to disable see https://www.elastic.co/guide/en/kibana/8.11/production.html#openssl-legacy-provider
+{"log.level":"info","@timestamp":"2024-01-14T04:14:02.500Z","log":{"logger":"elastic-apm-node"},"agentVersion":"4.1.0","env":{"pid":6,"proctitle":"/usr/share/kibana/bin/../node/bin/node","os":"linux 6.5.11-linuxkit","arch":"arm64","host":"74020e18f5cf","timezone":"UTC+00","runtime":"Node.js v18.18.2"},"config":{"serviceName":{"source":"start","value":"kibana","commonName":"service_name"},"serviceVersion":{"source":"start","value":"8.11.4","commonName":"service_version"},"serverUrl":{"source":"start","value":"https://kibana-cloud-apm.apm.us-east-1.aws.found.io/","commonName":"server_url"},"logLevel":{"source":"default","value":"info","commonName":"log_level"},"active":{"source":"start","value":true},"contextPropagationOnly":{"source":"start","value":true},"environment":{"source":"start","value":"production"},"globalLabels":{"source":"start","value":[["git_rev","4e90188951eb2dce4f4a0d45ba1a0b9ae9efe19d"]],"sourceValue":{"git_rev":"4e90188951eb2dce4f4a0d45ba1a0b9ae9efe19d"}},"secretToken":{"source":"start","value":"[REDACTED]","commonName":"secret_token"},"breakdownMetrics":{"source":"start","value":false},"captureSpanStackTraces":{"source":"start","sourceValue":false},"centralConfig":{"source":"start","value":false},"metricsInterval":{"source":"start","value":120,"sourceValue":"120s"},"propagateTracestate":{"source":"start","value":true},"transactionSampleRate":{"source":"start","value":0.1,"commonName":"transaction_sample_rate"},"captureBody":{"source":"start","value":"off","commonName":"capture_body"},"captureHeaders":{"source":"start","value":false}},"activationMethod":"require","ecs":{"version":"1.6.0"},"message":"Elastic APM Node.js Agent v4.1.0"}
+[2024-01-14T04:14:03.087+00:00][INFO ][root] Kibana is starting
+[2024-01-14T04:14:03.121+00:00][INFO ][node] Kibana process configured with roles: [background_tasks, ui]
+[2024-01-14T04:14:08.642+00:00][INFO ][plugins-service] Plugin "cloudChat" is disabled.
+[2024-01-14T04:14:08.645+00:00][INFO ][plugins-service] Plugin "cloudExperiments" is disabled.
+[2024-01-14T04:14:08.645+00:00][INFO ][plugins-service] Plugin "cloudFullStory" is disabled.
+[2024-01-14T04:14:08.645+00:00][INFO ][plugins-service] Plugin "cloudGainsight" is disabled.
+[2024-01-14T04:14:08.722+00:00][INFO ][plugins-service] Plugin "profilingDataAccess" is disabled.
+[2024-01-14T04:14:08.722+00:00][INFO ][plugins-service] Plugin "profiling" is disabled.
+[2024-01-14T04:14:08.748+00:00][INFO ][plugins-service] Plugin "securitySolutionServerless" is disabled.
+[2024-01-14T04:14:08.749+00:00][INFO ][plugins-service] Plugin "serverless" is disabled.
+[2024-01-14T04:14:08.749+00:00][INFO ][plugins-service] Plugin "serverlessObservability" is disabled.
+[2024-01-14T04:14:08.749+00:00][INFO ][plugins-service] Plugin "serverlessSearch" is disabled.
+[2024-01-14T04:14:08.860+00:00][INFO ][http.server.Preboot] http server running at http://0.0.0.0:5601
+[2024-01-14T04:14:08.913+00:00][INFO ][plugins-system.preboot] Setting up [1] plugins: [interactiveSetup]
+[2024-01-14T04:14:08.914+00:00][INFO ][preboot] "interactiveSetup" plugin is holding setup: Validating Elasticsearch connection configuration…
+[2024-01-14T04:14:08.929+00:00][INFO ][root] Holding setup until preboot stage is completed.
+
+
+i Kibana has not been configured.
+
+Go to http://0.0.0.0:5601/?code=784688 to get started.
+
+
+
+*** Configure Elastic to get started
+ Enrollment tokenのテキストフィールドに、先ほど作成したトークンをコピーして、
+ [Configure Elastic]ボタンをクリックする。
+
+ログイン画面が表示されるので、
+ユーザー名：elastic
+パスワード：先ほど生成したもの
+でログインする。
+
+ログインすると、「Welcome to Elastic」が表示される。
+
+
+**********
+
+elasticsearchのpythonクライアントのセットアップ
+
+1. pip install
+% python3 -m venv venv
+naoyainoue@NaoyanoMacBook-Air-2 elastic % 
+naoyainoue@NaoyanoMacBook-Air-2 elastic % 
+naoyainoue@NaoyanoMacBook-Air-2 elastic % source ./venv/bin/activate
+(venv) naoyainoue@NaoyanoMacBook-Air-2 elastic % 
+(venv) naoyainoue@NaoyanoMacBook-Air-2 elastic % pip install elasticsearch
+Collecting elasticsearch
+  Downloading elasticsearch-8.11.1-py3-none-any.whl (412 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 412.8/412.8 kB 15.0 MB/s eta 0:00:00
+Collecting elastic-transport<9,>=8
+  Downloading elastic_transport-8.11.0-py3-none-any.whl (59 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 59.8/59.8 kB 10.9 MB/s eta 0:00:00
+Collecting urllib3<3,>=1.26.2
+  Using cached urllib3-2.1.0-py3-none-any.whl (104 kB)
+Collecting certifi
+  Using cached certifi-2023.11.17-py3-none-any.whl (162 kB)
+Installing collected packages: urllib3, certifi, elastic-transport, elasticsearch
+Successfully installed certifi-2023.11.17 elastic-transport-8.11.0 elasticsearch-8.11.1 urllib3-2.1.0
+
+[notice] A new release of pip available: 22.3 -> 23.3.2
+[notice] To update, run: pip install --upgrade pip
+(venv) naoyainoue@NaoyanoMacBook-Air-2 elastic %
+
+2. pythonで接続テスト
+
+% vi connect-test.py 
+
+from elasticsearch import Elasticsearch
+
+host = "https://localhost:9200"
+USER = "elastic"
+PASS = "7_Mmrpl3M*-sL85dHhM5"
+CERTIFICATE = "./http_ca.crt"
+
+client = Elasticsearch(
+    host, basic_auth=(USER, PASS), ca_certs=CERTIFICATE
+)
+
+print(client.info())
+
+% python3 connect-test.py
+{'name': 'f94a3a8c93c2', 'cluster_name': 'docker-cluster', 'cluster_uuid': 'yEabddRlTiKGcHbfVBjFTw', 'version': {'number': '8.11.4', 'build_flavor': 'default', 'build_type': 'docker', 'build_hash': 'da06c53fd49b7e676ccf8a32d6655c5155c16d81', 'build_date': '2024-01-08T10:05:08.438562403Z', 'build_snapshot': False, 'lucene_version': '9.8.0', 'minimum_wire_compatibility_version': '7.17.0', 'minimum_index_compatibility_version': '7.0.0'}, 'tagline': 'You Know, for Search'}
+(venv) naoyainoue@NaoyanoMacBook-Air-2 elastic %
+
